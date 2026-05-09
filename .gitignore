@@ -1,0 +1,26 @@
+# Laravel Backend
+laravel-backend/vendor/
+laravel-backend/node_modules/
+laravel-backend/public/build/
+laravel-backend/public/hot/
+laravel-backend/public/storage
+laravel-backend/storage/*.key
+laravel-backend/storage/logs/*.log
+laravel-backend/storage/framework/cache/data/*
+laravel-backend/storage/framework/sessions/*
+laravel-backend/storage/framework/testing/*
+laravel-backend/storage/framework/views/*
+laravel-backend/.env
+laravel-backend/.env.backup
+laravel-backend/.env.production
+laravel-backend/.phpunit.result.cache
+laravel-backend/Homestead.json
+laravel-backend/Homestead.yaml
+laravel-backend/auth.json
+laravel-backend/npm-debug.log
+laravel-backend/yarn-error.log
+
+# System Files
+.DS_Store
+Thumbs.db
+*.log

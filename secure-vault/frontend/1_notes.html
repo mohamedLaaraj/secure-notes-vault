@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Secure Notes Vault Pro</title>
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><path fill='%2338bdf8' d='M464 64H48C21.5 64 0 85.5 0 112v288c0 26.5 21.5 48 48 48h416c26.5 0 48-21.5 48-48V112c0-26.5-21.5-48-48-48zM256 384c-70.7 0-128-57.3-128-128s57.3-128 128-128 128 57.3 128 128-57.3 128-128 128zM256 224a32 32 0 1 0 0 64 32 32 0 1 0 0-64z'/></svg>">
+    <link rel="stylesheet" href="2_notes.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+
+<body>
+    <div class="cyber-grid"></div>
+
+    <!-- ═══════════════════════════════════════════════════════════
+         SCREEN 1: REGISTER / LOGIN (shown when no token stored)
+    ═══════════════════════════════════════════════════════════ -->
+    <div id="authScreen" class="login-overlay">
+        <div class="login-modal">
+            <div class="login-icon"><i class="fas fa-shield-alt"></i></div>
+            <h2>Secure Notes Vault</h2>
+            <p class="login-subtitle">Zero-Knowledge Architecture · AES-256-CBC</p>
+
+            <!-- Tab switcher: Login / Register -->
+            <div class="auth-tabs">
+                <button class="auth-tab active" data-tab="login">Login</button>
+                <button class="auth-tab" data-tab="register">Register</button>
+            </div>
+
+            <!-- LOGIN FORM -->
+            <div id="loginForm" class="auth-form">
+                <input type="email" id="loginEmail" placeholder="Email address" autocomplete="email">
+                <div class="password-wrapper">
+                    <input type="password" id="loginPassword" placeholder="Password" autocomplete="current-password">
+                    <i class="fas fa-eye-slash toggle-password" id="toggleLoginPassword" title="Toggle password visibility"></i>
+                </div>
+                <button id="loginBtn" class="btn-primary">🔓 Unlock Vault</button>
+                <div class="forgot-link-wrapper">
+                    <button type="button" id="showForgotBtn" class="forgot-link">
+                        <i class="fas fa-key"></i> Forgot password?
+                    </button>
+                </div>
+                <div id="loginError" class="auth-error" style="display:none;"></div>
+            </div>
+
+            <!-- FORGOT PASSWORD PANEL (shown inline) -->
+            <div id="forgotPanel" class="auth-form" style="display:none;">
+                <p class="forgot-panel-title"><i class="fas fa-envelope"></i> Reset your password</p>
+                <p class="forgot-panel-sub">Enter your email address and we will send you a reset link.</p>
+                <input type="email" id="forgotEmail" placeholder="Your email address" autocomplete="email">
+                <button id="sendResetBtn" class="btn-primary"><i class="fas fa-paper-plane"></i> Send Reset Link</button>
+                <button type="button" id="backToLoginBtn" class="btn-secondary" style="margin-top:4px;">
+                    <i class="fas fa-arrow-left"></i> Back to Login
+                </button>
+                <div id="forgotMsg" class="auth-error" style="display:none;"></div>
+            </div>
+
+            <!-- REGISTER FORM -->
+            <div id="registerForm" class="auth-form" style="display:none;">
+                <input type="text" id="regName" placeholder="Your name">
+                <input type="email" id="regEmail" placeholder="Email address" autocomplete="email">
+                <div class="password-wrapper">
+                    <input type="password" id="regPassword" placeholder="Password (min. 8 chars)" autocomplete="new-password">
+                    <i class="fas fa-eye-slash toggle-password" id="toggleRegPassword" title="Toggle password visibility"></i>
+                </div>
+                <div class="password-strength" style="margin-bottom: 12px; margin-top: -8px;">
+                    <div class="strength-bar" id="regStrengthBar"></div>
+                    <span class="strength-text" id="regStrengthText"></span>
+                </div>
+                <div class="password-wrapper">
+                    <input type="password" id="regPassword2" placeholder="Confirm Password">
+                    <i class="fas fa-eye-slash toggle-password" id="toggleRegPassword2" title="Toggle password visibility"></i>
+                </div>
+                <button id="registerBtn" class="btn-primary">🔐 Create Vault</button>
+                <div id="registerError" class="auth-error" style="display:none;"></div>
+            </div>
+
+            <div class="login-info">
+                <i class="fas fa-info-circle"></i> Your password never leaves your device in plain text
+            </div>
+        </div>
+        <div class="auth-signature">
+            Designed & Developed by Mohamed Laaraj <i class="fas fa-code signature-icon"></i> 2026
+        </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════════
+         SCREEN 2: MAIN APP (shown after successful login)
+    ═══════════════════════════════════════════════════════════ -->
+    <div id="mainApp" style="display:none;">
+        <div class="container">
+
+            <!-- Header -->
+            <div class="title">
+                <div class="logo-badge">
+                    <i class="fas fa-vault" style="font-size:32px; color:#38bdf8;"></i>
+                </div>
+                <div class="title-text">
+                    <h1>🔐 SECURE NOTES VAULT <span style="font-size:0.8rem;">PRO</span></h1>
+                    <p class="subtitle">Zero-Knowledge Architecture | AES-256-CBC | PBKDF2-310K</p>
+                </div>
+                <div class="security-status">
+                    <span class="status-led green"></span>
+                    <span id="userGreeting">Session Active</span>
+                    <button id="lockBtn" class="logout-btn" title="Secure Logout"><i class="fas fa-sign-out-alt"></i> Logout</button>
+                    <button id="settingsBtn" class="icon-btn" title="Settings"><i class="fas fa-cog"></i></button>
+                </div>
+            </div>
+
+            <!-- Action Bar -->
+            <div class="action-bar">
+                <div class="search-box">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="searchInput" placeholder="Search notes...">
+                </div>
+                <div class="action-buttons">
+                    <button id="exportBtn" class="btn-secondary"><i class="fas fa-download"></i> Export</button>
+                    <button id="importBtn" class="btn-secondary"><i class="fas fa-upload"></i> Import</button>
+                    <button id="clearAllBtn" class="btn-danger"><i class="fas fa-trash-alt"></i> Clear All</button>
+                </div>
+            </div>
+
+            <!-- New Note Input -->
+            <div class="card input-card">
+                <div class="card-header">
+                    <span><i class="fas fa-pen"></i> New Encrypted Note</span>
+                    <span class="tooltip-icon" title="Encrypted in your browser before sending to server">ⓘ</span>
+                </div>
+                <div class="input-section">
+                    <div class="category-selector">
+                        <select id="noteCategory">
+                            <option value="Personal">📔 Personal</option>
+                            <option value="Work">💼 Work</option>
+                            <option value="Financial">💰 Financial</option>
+                            <option value="Credentials">🔑 Credentials</option>
+                            <option value="Other">📁 Other</option>
+                        </select>
+                    </div>
+                    <textarea id="noteInput"
+                        placeholder="Write your confidential note here... (encrypted before saving)"
+                        maxlength="5000"></textarea>
+                    <div class="input-group">
+                        <div class="password-wrapper">
+                            <input type="password" id="passwordInput" placeholder="Encryption password for this note">
+                            <i class="fas fa-eye-slash toggle-password" id="togglePasswordInput" title="Toggle password visibility"></i>
+                        </div>
+                        <button id="saveBtn" class="btn-primary"><i class="fas fa-shield-alt"></i> Encrypt &
+                            Save</button>
+                    </div>
+                    <div class="password-strength">
+                        <div class="strength-bar" id="strengthBar"></div>
+                        <span class="strength-text" id="strengthText"></span>
+                    </div>
+                    <div class="security-hint">
+                        <span><i class="fas fa-key"></i> Unique salt + IV per note | PBKDF2-310K | Server stores only
+                            ciphertext</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Notes Vault -->
+            <div class="card notes-card">
+                <div class="card-header">
+                    <span><i class="fas fa-database"></i> Encrypted Notes Vault</span>
+                    <div class="header-controls">
+                        <span id="noteCounter" class="badge">0 notes</span>
+                        <select id="categoryFilter" class="filter-select">
+                            <option value="all">All Categories</option>
+                            <option value="Personal">📔 Personal</option>
+                            <option value="Work">💼 Work</option>
+                            <option value="Financial">💰 Financial</option>
+                            <option value="Credentials">🔑 Credentials</option>
+                            <option value="Other">📁 Other</option>
+                        </select>
+                    </div>
+                </div>
+                <div id="notesList" class="notes-list">
+                    <div class="empty-state">
+                        <i class="fas fa-spinner fa-spin" style="font-size:32px;"></i>
+                        <p>Loading your vault...</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer -->
+            <div class="footer-note">
+                <p>
+                    <i class="fas fa-shield-virus"></i>
+                    <strong>Security:</strong> Client-side AES-256-CBC · PBKDF2-SHA256 · Zero-Knowledge Backend ·
+                    Session: <span id="timerDisplay">15:00</span>
+                </p>
+                <div class="app-signature">
+                    Designed & Developed by Mohamed Laaraj <i class="fas fa-code signature-icon"></i> 2026
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Settings Modal -->
+    <div id="settingsModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-sliders-h"></i> Security Settings</h3>
+                <button class="close-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="setting-item">
+                    <label><i class="fas fa-clock"></i> Auto-lock timeout:</label>
+                    <select id="timeoutSelect">
+                        <option value="5">5 minutes</option>
+                        <option value="15" selected>15 minutes</option>
+                        <option value="30">30 minutes</option>
+                        <option value="60">60 minutes</option>
+                    </select>
+                </div>
+                <div class="setting-item">
+                    <label><i class="fas fa-palette"></i> Theme:</label>
+                    <select id="themeSelect">
+                        <option value="dark">Dark (Cyber)</option>
+                        <option value="light">Light Mode</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Logout Confirmation Modal -->
+    <div id="logoutModal" class="modal">
+        <div class="modal-content" style="max-width: 400px; text-align: center;">
+            <div class="modal-header" style="justify-content: center;">
+                <h3><i class="fas fa-sign-out-alt"></i> Confirm Logout</h3>
+            </div>
+            <div class="modal-body">
+                <p style="color: #94a3b8; margin-bottom: 2rem;">Are you sure you want to lock your vault and logout?</p>
+                <div style="display: flex; gap: 1rem; justify-content: center;">
+                    <button id="confirmLogoutBtn" class="btn-danger" style="padding: 10px 24px;">Logout</button>
+                    <button id="cancelLogoutBtn" class="btn-secondary" style="padding: 10px 24px;">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="3_notes.js"></script>
+</body>
+
+</html>
