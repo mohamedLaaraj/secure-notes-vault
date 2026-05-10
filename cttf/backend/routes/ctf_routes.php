@@ -1,18 +1,26 @@
 <?php
 
+/**
+ * ADD THESE ROUTES TO YOUR EXISTING laravel-backend/routes/api.php
+ * Add them INSIDE the auth:sanctum middleware group
+ * 
+ * ─────────────────────────────────────────────────────────────────
+ * Your existing api.php should look like this after adding:
+ * ─────────────────────────────────────────────────────────────────
+ */
+
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\NoteController;
-use App\Http\Controllers\PasswordResetController;
 use App\Http\Controllers\CtfController;
 use Illuminate\Support\Facades\Route;
 
-// ── PUBLIC ROUTES (no token required) ──────────────────────────
-Route::post('register',        [AuthController::class, 'register'])->middleware('throttle:10,1');
-Route::post('login',           [AuthController::class, 'login'])->middleware('throttle:5,1');
-Route::post('forgot-password', [PasswordResetController::class, 'forgotPassword'])->middleware('throttle:5,1');
-Route::post('reset-password',  [PasswordResetController::class, 'resetPassword'])->middleware('throttle:5,1');
+// PUBLIC
+Route::post('register', [AuthController::class, 'register'])->middleware('throttle:10,1');
+Route::post('login',    [AuthController::class, 'login'])->middleware('throttle:5,1');
+Route::post('forgot-password', [AuthController::class, 'forgotPassword']);
+Route::post('reset-password',  [AuthController::class, 'resetPassword']);
 
-// ── PROTECTED ROUTES (Bearer token required) ───────────────────
+// PROTECTED
 Route::middleware('auth:sanctum')->group(function () {
 
     // Auth

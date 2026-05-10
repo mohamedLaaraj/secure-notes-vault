@@ -112,6 +112,7 @@
         exportBtn.addEventListener('click', exportVault);
         importBtn.addEventListener('click', importVault);
         clearAllBtn.addEventListener('click', handleClearAll);
+        $('ctfBtn').addEventListener('click', () => { window.location.href = 'ctf.html'; });
         lockBtn.addEventListener('click', () => logoutModal.style.display = 'flex');
         confirmLogoutBtn.addEventListener('click', () => {
             logoutModal.style.display = 'none';

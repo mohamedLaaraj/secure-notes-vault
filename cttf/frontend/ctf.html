@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CipherStrike CTF | Secure Notes Vault</title>
+    <link rel="stylesheet" href="2_notes.css">
+    <link rel="stylesheet" href="ctf.css">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+    <div class="cyber-grid"></div>
+
+    <!-- ═══ MAIN APP ═══════════════════════════════════════════ -->
+    <div id="mainApp">
+        <div class="container">
+
+            <!-- Header -->
+            <div class="title">
+                <div class="logo-badge">
+                    <i class="fas fa-crosshairs" style="font-size:32px;color:#f43f5e;"></i>
+                </div>
+                <div class="title-text">
+                    <h1>⚔️ CIPHERSTRIKE <span style="font-size:0.8rem;color:#f43f5e;">CTF</span></h1>
+                    <p class="subtitle">Capture The Flag Competition | Hacking · Crypto · Forensics · Web</p>
+                </div>
+                <div class="security-status" style="border-color:#f43f540;">
+                    <span class="status-led red"></span>
+                    <span id="userGreeting">Player</span>
+                    <span class="badge" id="userScore" style="color:#f43f5e;border-color:#f43f5e40;">0 pts</span>
+                    <button onclick="window.location.href='1_notes.html'" class="icon-btn" title="Go to Notes Vault"><i class="fas fa-vault"></i></button>
+                    <button id="logoutBtn" class="icon-btn" title="Logout"><i class="fas fa-sign-out-alt"></i></button>
+                </div>
+            </div>
+
+            <!-- CTF Nav Tabs -->
+            <div class="ctf-nav">
+                <button class="ctf-tab active" data-tab="challenges"><i class="fas fa-flag"></i> Challenges</button>
+                <button class="ctf-tab" data-tab="scoreboard"><i class="fas fa-trophy"></i> Scoreboard</button>
+                <button class="ctf-tab" data-tab="rules"><i class="fas fa-scroll"></i> Rules</button>
+                <button class="ctf-tab" data-tab="profile"><i class="fas fa-user-secret"></i> My Profile</button>
+                <div class="ctf-timer-badge">
+                    <i class="fas fa-clock"></i>
+                    <span id="ctfTimer">--:--:--</span>
+                </div>
+            </div>
+
+            <!-- ═══ TAB: CHALLENGES ═══════════════════════════════ -->
+            <div id="tab-challenges" class="tab-content active">
+
+                <!-- Stats Bar -->
+                <div class="ctf-stats-bar">
+                    <div class="ctf-stat">
+                        <span class="ctf-stat-num" id="statSolved">0</span>
+                        <span class="ctf-stat-label">Solved</span>
+                    </div>
+                    <div class="ctf-stat">
+                        <span class="ctf-stat-num" id="statTotal">0</span>
+                        <span class="ctf-stat-label">Total</span>
+                    </div>
+                    <div class="ctf-stat">
+                        <span class="ctf-stat-num" id="statPoints">0</span>
+                        <span class="ctf-stat-label">Points</span>
+                    </div>
+                    <div class="ctf-stat">
+                        <span class="ctf-stat-num" id="statRank">#–</span>
+                        <span class="ctf-stat-label">Rank</span>
+                    </div>
+                </div>
+
+                <!-- Category Filter -->
+                <div class="category-filter-bar">
+                    <button class="cat-btn active" data-cat="all">🌐 All</button>
+                    <button class="cat-btn" data-cat="web">🌍 Web</button>
+                    <button class="cat-btn" data-cat="crypto">🔐 Crypto</button>
+                    <button class="cat-btn" data-cat="forensics">🔬 Forensics</button>
+                    <button class="cat-btn" data-cat="reverse">⚙️ Reverse</button>
+                    <button class="cat-btn" data-cat="osint">🕵️ OSINT</button>
+                    <button class="cat-btn" data-cat="misc">🎯 Misc</button>
+                </div>
+
+                <!-- Challenges Grid -->
+                <div id="challengesGrid" class="challenges-grid">
+                    <div class="empty-state">
+                        <span class="spinner" style="width:32px;height:32px;border-width:3px;"></span>
+                        <p>Loading challenges...</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ═══ TAB: SCOREBOARD ══════════════════════════════ -->
+            <div id="tab-scoreboard" class="tab-content">
+                <div class="card">
+                    <div class="card-header">
+                        <span><i class="fas fa-trophy"></i> Live Scoreboard</span>
+                        <button onclick="loadScoreboard()" class="btn-secondary" style="padding:4px 12px;font-size:0.8rem;">
+                            <i class="fas fa-sync"></i> Refresh
+                        </button>
+                    </div>
+                    <div id="scoreboardList" style="padding:1rem 1.5rem;">
+                        <div class="empty-state"><p>Loading scoreboard...</p></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ═══ TAB: RULES ═══════════════════════════════════ -->
+            <div id="tab-rules" class="tab-content">
+                <div class="card">
+                    <div class="card-header"><span><i class="fas fa-scroll"></i> Competition Rules</span></div>
+                    <div style="padding:1.5rem;line-height:1.8;color:#cbd5e1;">
+                        <div class="rule-item"><i class="fas fa-flag" style="color:#f43f5e;margin-right:8px;"></i> <strong>Flag Format:</strong> FLAG{...} — all flags follow this format</div>
+                        <div class="rule-item"><i class="fas fa-ban" style="color:#f43f5e;margin-right:8px;"></i> <strong>No Brute Force:</strong> Do not brute force the flag submission system</div>
+                        <div class="rule-item"><i class="fas fa-users" style="color:#f43f5e;margin-right:8px;"></i> <strong>No Sharing:</strong> Do not share flags or solutions during the competition</div>
+                        <div class="rule-item"><i class="fas fa-robot" style="color:#f43f5e;margin-right:8px;"></i> <strong>Anti-AI:</strong> Challenges are designed to require human reasoning — AI tools won't help</div>
+                        <div class="rule-item"><i class="fas fa-server" style="color:#f43f5e;margin-right:8px;"></i> <strong>No DoS:</strong> Do not attack the competition infrastructure</div>
+                        <div class="rule-item"><i class="fas fa-star" style="color:#f43f5e;margin-right:8px;"></i> <strong>Points:</strong> Easy = 100pts | Medium = 250pts | Hard = 500pts | Insane = 1000pts</div>
+                        <div class="rule-item"><i class="fas fa-clock" style="color:#f43f5e;margin-right:8px;"></i> <strong>Hints:</strong> Using a hint costs 50% of the challenge's points</div>
+                        <div class="rule-item"><i class="fas fa-trophy" style="color:#f43f5e;margin-right:8px;"></i> <strong>Tiebreaker:</strong> In case of equal points, earliest solve wins</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ═══ TAB: PROFILE ═════════════════════════════════ -->
+            <div id="tab-profile" class="tab-content">
+                <div class="card">
+                    <div class="card-header"><span><i class="fas fa-user-secret"></i> My Profile</span></div>
+                    <div style="padding:1.5rem;">
+                        <div class="profile-header">
+                            <div class="profile-avatar"><i class="fas fa-user-ninja"></i></div>
+                            <div class="profile-info">
+                                <h2 id="profileName" style="color:#f43f5e;">Player</h2>
+                                <p id="profileEmail" style="color:#94a3b8;font-size:0.85rem;"></p>
+                                <div style="display:flex;gap:1rem;margin-top:0.5rem;">
+                                    <span class="badge" id="profileRank">Rank #–</span>
+                                    <span class="badge" id="profilePoints" style="color:#f43f5e;border-color:#f43f5e40;">0 pts</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div style="margin-top:1.5rem;">
+                            <h3 style="color:#cbd5e1;margin-bottom:1rem;font-size:0.9rem;"><i class="fas fa-check-circle" style="color:#22c55e;margin-right:6px;"></i>Solved Challenges</h3>
+                            <div id="solvedList" class="solved-list">
+                                <p style="color:#5b6e8c;">No challenges solved yet. Start hacking!</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer -->
+            <div class="footer-note">
+                <p><i class="fas fa-crosshairs"></i> <strong>CipherStrike CTF</strong> · Designed & Developed by <strong style="color:#f43f5e;">Mohamed Laaraj</strong> · 2026</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══ CHALLENGE MODAL ══════════════════════════════════════ -->
+    <div id="challengeModal" class="modal" style="display:none;">
+        <div class="modal-content challenge-modal-content">
+            <div class="modal-header" id="modalHeader">
+                <div>
+                    <h3 id="modalTitle">Challenge Title</h3>
+                    <div style="display:flex;gap:0.5rem;margin-top:4px;">
+                        <span id="modalCategory" class="badge"></span>
+                        <span id="modalDifficulty" class="badge"></span>
+                        <span id="modalPoints" class="badge" style="color:#f43f5e;border-color:#f43f5e40;"></span>
+                    </div>
+                </div>
+                <button class="close-modal" onclick="closeModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="challenge-description" id="modalDescription"></div>
+                <div id="modalAttachment" style="display:none;margin-bottom:1rem;">
+                    <a id="attachmentLink" href="#" class="btn-secondary" style="display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:8px;text-decoration:none;font-size:0.85rem;">
+                        <i class="fas fa-download"></i> Download Attachment
+                    </a>
+                </div>
+                <div id="solvedBadge" class="solved-badge" style="display:none;">
+                    <i class="fas fa-check-circle"></i> Already Solved!
+                </div>
+                <div id="flagSubmitSection">
+                    <div class="flag-input-group">
+                        <input type="text" id="flagInput" placeholder="FLAG{your_answer_here}" class="flag-input">
+                        <button onclick="submitFlag()" class="btn-primary" style="border-color:#f43f5e;color:#fecdd3;">
+                            <i class="fas fa-paper-plane"></i> Submit
+                        </button>
+                    </div>
+                    <div id="flagFeedback" class="flag-feedback" style="display:none;"></div>
+                </div>
+                <div style="margin-top:1rem;border-top:1px dashed #1e2a4a;padding-top:1rem;">
+                    <button id="hintBtn" onclick="requestHint()" class="btn-secondary" style="font-size:0.8rem;">
+                        <i class="fas fa-lightbulb"></i> Use Hint (-50% points)
+                    </button>
+                    <div id="hintText" style="display:none;margin-top:0.75rem;padding:0.75rem;background:#0f172a;border-radius:8px;border-left:3px solid #f43f5e;color:#94a3b8;font-size:0.85rem;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="3_notes.js"></script>
+    <script src="ctf.js"></script>
+</body>
+</html>
