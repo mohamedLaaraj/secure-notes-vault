@@ -15,55 +15,55 @@
     // ──────────────────────────────────────────────────────────────
     // CONFIGURATION — change API_BASE to your Laravel server URL
     // ──────────────────────────────────────────────────────────────
-    const API_BASE          = 'http://localhost:8000/api';   // ← YOUR LARAVEL URL
-    const TOKEN_KEY         = 'vault_bearer_token';           // sessionStorage key
+    const API_BASE = 'https://secure-notes-vault-production.up.railway.app/api';   // ← YOUR PRODUCTION URL
+    const TOKEN_KEY = 'vault_bearer_token';           // sessionStorage key
     const SESSION_TIMER_KEY = 'vault_session_start';
-    const SALT_LENGTH       = 16;
-    const IV_LENGTH         = 16;
-    const KEY_SIZE          = 256 / 32;
+    const SALT_LENGTH = 16;
+    const IV_LENGTH = 16;
+    const KEY_SIZE = 256 / 32;
     const PBKDF2_ITERATIONS = 310000;
 
     // App state
-    let notes              = [];
-    let sessionTimer       = null;
-    let timeoutMinutes     = 15;
-    let searchQuery        = '';
-    let categoryFilter     = 'all';
-    let currentUser        = null;
+    let notes = [];
+    let sessionTimer = null;
+    let timeoutMinutes = 15;
+    let searchQuery = '';
+    let categoryFilter = 'all';
+    let currentUser = null;
 
     // ──────────────────────────────────────────────────────────────
     // DOM REFERENCES
     // ──────────────────────────────────────────────────────────────
     const $ = id => document.getElementById(id);
 
-    const authScreen     = $('authScreen');
-    const mainApp        = $('mainApp');
-    const loginForm      = $('loginForm');
-    const registerForm   = $('registerForm');
-    const loginBtn       = $('loginBtn');
-    const registerBtn    = $('registerBtn');
-    const loginError     = $('loginError');
-    const registerError  = $('registerError');
-    const noteInput      = $('noteInput');
-    const passwordInput  = $('passwordInput');
-    const saveBtn        = $('saveBtn');
-    const notesList      = $('notesList');
-    const noteCounter    = $('noteCounter');
-    const searchInput    = $('searchInput');
+    const authScreen = $('authScreen');
+    const mainApp = $('mainApp');
+    const loginForm = $('loginForm');
+    const registerForm = $('registerForm');
+    const loginBtn = $('loginBtn');
+    const registerBtn = $('registerBtn');
+    const loginError = $('loginError');
+    const registerError = $('registerError');
+    const noteInput = $('noteInput');
+    const passwordInput = $('passwordInput');
+    const saveBtn = $('saveBtn');
+    const notesList = $('notesList');
+    const noteCounter = $('noteCounter');
+    const searchInput = $('searchInput');
     const categoryFilterEl = $('categoryFilter');
-    const exportBtn      = $('exportBtn');
-    const importBtn      = $('importBtn');
-    const clearAllBtn    = $('clearAllBtn');
-    const lockBtn        = $('lockBtn');
-    const settingsBtn    = $('settingsBtn');
-    const settingsModal  = $('settingsModal');
-    const timerDisplay   = $('timerDisplay');
-    const logoutModal    = $('logoutModal');
+    const exportBtn = $('exportBtn');
+    const importBtn = $('importBtn');
+    const clearAllBtn = $('clearAllBtn');
+    const lockBtn = $('lockBtn');
+    const settingsBtn = $('settingsBtn');
+    const settingsModal = $('settingsModal');
+    const timerDisplay = $('timerDisplay');
+    const logoutModal = $('logoutModal');
     const confirmLogoutBtn = $('confirmLogoutBtn');
     const cancelLogoutBtn = $('cancelLogoutBtn');
-    const strengthBar    = $('strengthBar');
-    const strengthText   = $('strengthText');
-    const userGreeting   = $('userGreeting');
+    const strengthBar = $('strengthBar');
+    const strengthText = $('strengthText');
+    const userGreeting = $('userGreeting');
 
     // ══════════════════════════════════════════════════════════════
     //  INITIALIZATION
@@ -167,7 +167,7 @@
         authScreen.style.display = 'flex';
         mainApp.style.display = 'none';
         // Always clear login fields — never leak previous credentials
-        $('loginEmail').value    = '';
+        $('loginEmail').value = '';
         $('loginPassword').value = '';
         hideError(loginError);
     }
@@ -184,7 +184,7 @@
     function switchAuthTab(tab) {
         document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
         document.querySelector(`[data-tab="${tab}"]`).classList.add('active');
-        loginForm.style.display    = tab === 'login'    ? 'flex' : 'none';
+        loginForm.style.display = tab === 'login' ? 'flex' : 'none';
         registerForm.style.display = tab === 'register' ? 'flex' : 'none';
         $('forgotPanel').style.display = 'none';   // always hide the forgot panel on tab switch
         hideError(loginError);
@@ -243,7 +243,7 @@
 
     async function handleLogin() {
         hideError(loginError);
-        const email    = $('loginEmail').value.trim();
+        const email = $('loginEmail').value.trim();
         const password = $('loginPassword').value;
 
         if (!email || !password) {
@@ -270,9 +270,9 @@
 
     async function handleRegister() {
         hideError(registerError);
-        const name      = $('regName').value.trim();
-        const email     = $('regEmail').value.trim();
-        const password  = $('regPassword').value;
+        const name = $('regName').value.trim();
+        const email = $('regEmail').value.trim();
+        const password = $('regPassword').value;
         const password2 = $('regPassword2').value;
 
         if (!name || !email || !password) {
@@ -308,8 +308,8 @@
             switchAuthTab('login');
 
             // Clear register form
-            $('regName').value     = '';
-            $('regEmail').value    = '';
+            $('regName').value = '';
+            $('regEmail').value = '';
             $('regPassword').value = '';
             $('regPassword2').value = '';
             $('regStrengthBar').style.width = '0%';
@@ -323,34 +323,34 @@
     }
 
     async function handleForgotPassword() {
-        const msgEl  = $('forgotMsg');
-        const email  = $('forgotEmail').value.trim();
+        const msgEl = $('forgotMsg');
+        const email = $('forgotEmail').value.trim();
         const sendBtn = $('sendResetBtn');
 
         msgEl.style.display = 'none';
 
         if (!email) {
             msgEl.style.display = 'block';
-            msgEl.style.color   = '#f87171';
-            msgEl.textContent   = 'Please enter your email address.';
+            msgEl.style.color = '#f87171';
+            msgEl.textContent = 'Please enter your email address.';
             return;
         }
 
-        sendBtn.disabled    = true;
-        sendBtn.innerHTML   = '<span class="spinner"></span> Sending...';
+        sendBtn.disabled = true;
+        sendBtn.innerHTML = '<span class="spinner"></span> Sending...';
 
         try {
             const data = await api('POST', '/forgot-password', { email });
             msgEl.style.display = 'block';
-            msgEl.style.color   = '#4ade80';
-            msgEl.textContent   = '✅ ' + data.message;
-            sendBtn.innerHTML   = '<i class="fas fa-check"></i> Sent!';
+            msgEl.style.color = '#4ade80';
+            msgEl.textContent = '✅ ' + data.message;
+            sendBtn.innerHTML = '<i class="fas fa-check"></i> Sent!';
         } catch (err) {
             msgEl.style.display = 'block';
-            msgEl.style.color   = '#f87171';
-            msgEl.textContent   = err.message;
-            sendBtn.disabled    = false;
-            sendBtn.innerHTML   = '<i class="fas fa-paper-plane"></i> Send Reset Link';
+            msgEl.style.color = '#f87171';
+            msgEl.textContent = err.message;
+            sendBtn.disabled = false;
+            sendBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Send Reset Link';
         }
     }
 
@@ -389,16 +389,16 @@
 
     function encryptNote(plaintext, password) {
         if (!plaintext || !password) throw new Error('Missing required fields');
-        const salt         = generateSalt();
-        const iv           = generateIV();
-        const key          = deriveKey(password, salt);
-        const ivWordArray  = CryptoJS.enc.Base64.parse(iv);
-        const encrypted    = CryptoJS.AES.encrypt(plaintext, key, {
+        const salt = generateSalt();
+        const iv = generateIV();
+        const key = deriveKey(password, salt);
+        const ivWordArray = CryptoJS.enc.Base64.parse(iv);
+        const encrypted = CryptoJS.AES.encrypt(plaintext, key, {
             iv: ivWordArray,
             mode: CryptoJS.mode.CBC,
             padding: CryptoJS.pad.Pkcs7,
         });
-        const ciphertext   = encrypted.toString();
+        const ciphertext = encrypted.toString();
 
         // Integrity hash: SHA-256 of ciphertext (tamper detection)
         const integrityHash = CryptoJS.SHA256(ciphertext).toString();
@@ -407,9 +407,9 @@
     }
 
     function decryptNote(ciphertext, iv, salt, password) {
-        const key         = deriveKey(password, salt);
+        const key = deriveKey(password, salt);
         const ivWordArray = CryptoJS.enc.Base64.parse(iv);
-        const decrypted   = CryptoJS.AES.decrypt(ciphertext, key, {
+        const decrypted = CryptoJS.AES.decrypt(ciphertext, key, {
             iv: ivWordArray,
             mode: CryptoJS.mode.CBC,
             padding: CryptoJS.pad.Pkcs7,
@@ -438,11 +438,11 @@
     }
 
     async function handleSaveNote() {
-        const text     = noteInput.value.trim();
+        const text = noteInput.value.trim();
         const password = passwordInput.value;
         const category = $('noteCategory').value;
 
-        if (!text)     { showToast('Please write a note first', 'warning'); return; }
+        if (!text) { showToast('Please write a note first', 'warning'); return; }
         if (!password) { showToast('Enter an encryption password', 'warning'); return; }
 
         saveBtn.disabled = true;
@@ -455,10 +455,10 @@
             // 2. Send ONLY ciphertext to server
             const saved = await api('POST', '/notes', {
                 category,
-                ciphertext:      encrypted.ciphertext,
-                iv:              encrypted.iv,
-                salt:            encrypted.salt,
-                integrity_hash:  encrypted.integrity_hash,
+                ciphertext: encrypted.ciphertext,
+                iv: encrypted.iv,
+                salt: encrypted.salt,
+                integrity_hash: encrypted.integrity_hash,
             });
 
             // 3. Add to local list and re-render
@@ -466,7 +466,7 @@
             renderNotes();
 
             // 4. Clear inputs
-            noteInput.value    = '';
+            noteInput.value = '';
             passwordInput.value = '';
             if (strengthBar) { strengthBar.style.width = '0%'; }
             if (strengthText) { strengthText.textContent = ''; }
@@ -541,7 +541,7 @@
         notesList.innerHTML = filtered.map(note => {
             // Verify integrity hash on render (tamper detection)
             const computedHash = CryptoJS.SHA256(note.ciphertext).toString();
-            const tampered     = computedHash !== note.integrity_hash;
+            const tampered = computedHash !== note.integrity_hash;
 
             return `
             <div class="note-card" id="card-${note.id}">
@@ -604,10 +604,10 @@
                     </button>
                 </div>
             </div>`;
-        
-        const input  = $(`pass-${noteId}`);
+
+        const input = $(`pass-${noteId}`);
         const toggle = $(`toggle-${noteId}`);
-        
+
         if (toggle) {
             toggle.addEventListener('click', () => togglePasswordVisibility(`pass-${noteId}`, `toggle-${noteId}`));
         }
@@ -620,7 +620,7 @@
         }
     }
 
-    window.submitDecryption = function(noteId) {
+    window.submitDecryption = function (noteId) {
         const input = document.getElementById(`pass-${noteId}`);
         const password = input ? input.value : '';
         if (!password) {
@@ -637,7 +637,7 @@
         const contentDiv = document.getElementById(`noteContent-${noteId}`);
         const actionDiv = document.querySelector(`#card-${noteId} .note-actions`);
         const decryptBtn = actionDiv ? actionDiv.querySelector('.decrypt-btn') : null;
-        
+
         const originalHTML = `${escapeHtml(note.ciphertext.substring(0, 60))}…`;
         contentDiv.innerHTML = '<span class="spinner"></span> Decrypting...';
 
@@ -687,7 +687,7 @@
         const input = Object.assign(document.createElement('input'), { type: 'file', accept: '.json' });
         input.onchange = async e => {
             try {
-                const text     = await e.target.files[0].text();
+                const text = await e.target.files[0].text();
                 const imported = JSON.parse(text);
                 if (!Array.isArray(imported.notes)) throw new Error('Invalid format');
 
@@ -695,10 +695,10 @@
                 let count = 0;
                 for (const n of imported.notes) {
                     await api('POST', '/notes', {
-                        category:       n.category || 'Other',
-                        ciphertext:     n.ciphertext,
-                        iv:             n.iv,
-                        salt:           n.salt,
+                        category: n.category || 'Other',
+                        ciphertext: n.ciphertext,
+                        iv: n.iv,
+                        salt: n.salt,
                         integrity_hash: n.integrity_hash || CryptoJS.SHA256(n.ciphertext).toString(),
                     });
                     count++;
@@ -754,21 +754,21 @@
     // ══════════════════════════════════════════════════════════════
     function calculatePasswordScore(pw) {
         let score = 0;
-        if (pw.length >= 8)             score++;
-        if (pw.length >= 12)            score++;
-        if (/[A-Z]/.test(pw))           score++;
-        if (/[0-9]/.test(pw))           score++;
-        if (/[^A-Za-z0-9]/.test(pw))   score++;
+        if (pw.length >= 8) score++;
+        if (pw.length >= 12) score++;
+        if (/[A-Z]/.test(pw)) score++;
+        if (/[0-9]/.test(pw)) score++;
+        if (/[^A-Za-z0-9]/.test(pw)) score++;
         return score;
     }
 
     function updatePasswordUI(pw, barEl, textEl) {
         const score = calculatePasswordScore(pw);
-        const pct    = Math.min(100, score * 20);
+        const pct = Math.min(100, score * 20);
         const labels = ['', 'Very Weak', 'Weak', 'Fair', 'Strong', 'Very Strong'];
         const colors = ['', '#ef4444', '#f97316', '#eab308', '#22c55e', '#4ade80'];
 
-        if (barEl)  { barEl.style.width = `${pct}%`; barEl.style.background = colors[score] || '#ef4444'; }
+        if (barEl) { barEl.style.width = `${pct}%`; barEl.style.background = colors[score] || '#ef4444'; }
         if (textEl) { textEl.textContent = labels[score] || ''; }
         return score;
     }
@@ -785,7 +785,7 @@
         const input = $(inputId);
         const icon = $(iconId);
         if (!input || !icon) return;
-        
+
         if (input.type === 'password') {
             input.type = 'text';
             icon.classList.remove('fa-eye-slash');
@@ -812,7 +812,7 @@
         if (existing) existing.remove();
 
         const colors = { success: '#14532dcc', error: '#7f1d1dcc', warning: '#713f12cc', info: '#1e3a8acc' };
-        const icons  = { success: 'check-circle', error: 'exclamation-circle', warning: 'exclamation-triangle', info: 'info-circle' };
+        const icons = { success: 'check-circle', error: 'exclamation-circle', warning: 'exclamation-triangle', info: 'info-circle' };
 
         const toast = Object.assign(document.createElement('div'), {
             id: 'dynamicToast',
@@ -846,9 +846,9 @@
         const contentDiv = document.getElementById(`noteContent-${noteId}`);
         const actionDiv = document.querySelector(`#card-${noteId} .note-actions`);
         const decryptBtn = actionDiv ? actionDiv.querySelector('.decrypt-btn') : null;
-        const note       = notes.find(n => n.id == noteId);
+        const note = notes.find(n => n.id == noteId);
         if (!contentDiv || !note) return;
-        
+
         contentDiv.className = 'note-content';
         contentDiv.innerHTML = `${escapeHtml(note.ciphertext.substring(0, 60))}…`;
         if (decryptBtn) decryptBtn.style.display = 'inline-block';
