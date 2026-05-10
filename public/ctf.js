@@ -20,7 +20,7 @@
     // ── AUTH CHECK ──────────────────────────────────────────────
     async function init() {
         const token = sessionStorage.getItem(TOKEN_KEY);
-        if (!token) { window.location.href = '1_notes.html'; return; }
+        if (!token) { window.location.href = '/'; return; }
 
         try {
             const res  = await api('GET', '/user');
@@ -29,7 +29,7 @@
             document.getElementById('profileName').textContent  = res.name;
             document.getElementById('profileEmail').textContent = res.email;
         } catch {
-            window.location.href = '1_notes.html';
+            window.location.href = '/';
             return;
         }
 
@@ -322,7 +322,7 @@
     document.getElementById('logoutBtn').addEventListener('click', async () => {
         try { await api('POST', '/logout'); } catch {}
         sessionStorage.removeItem(TOKEN_KEY);
-        window.location.href = '1_notes.html';
+        window.location.href = '/';
     });
 
     // ── UTILS ─────────────────────────────────────────────────────
