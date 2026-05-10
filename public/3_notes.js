@@ -15,7 +15,7 @@
     // ──────────────────────────────────────────────────────────────
     // CONFIGURATION — change API_BASE to your Laravel server URL
     // ──────────────────────────────────────────────────────────────
-    const API_BASE = 'https://secure-notes-vault-production.up.railway.app/api';   // ← YOUR PRODUCTION URL
+    const API_BASE = '/api';   // ← RELATIVE API URL FOR RAILWAY ALL-IN-ONE
     const TOKEN_KEY = 'vault_bearer_token';           // sessionStorage key
     const SESSION_TIMER_KEY = 'vault_session_start';
     const SALT_LENGTH = 16;
