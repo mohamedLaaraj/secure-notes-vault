@@ -174,4 +174,48 @@ class CtfController extends Controller
         CtfChallenge::findOrFail($id)->delete();
         return response()->json(['message' => 'Challenge deleted']);
     }
+
+    public function getTransmission()
+    {
+        $transmission = "...Transmission intercepted at 03:47 UTC...\n" .
+            "...Source: UNKNOWN | Destination: UNKNOWN...\n" .
+            "...Decryption: PARTIAL...\n\n" .
+            "ACCESS GRANTED. READING CLASSIFIED FILE #4471-B...\n\n" .
+            "Analysts have been tracking a mysterious digital entity known only\n" .
+            "as \"The Archivist\" for several months. This individual operates in\n" .
+            "the shadows of the internet, leaving traces that are nearly\n" .
+            "impossible to follow without the right tools.\n\n" .
+            "A recent investigation led our team to an abandoned digital\n" .
+            "footprint. The trail goes cold quickly — most people give up here.\n" .
+            "a-nsqldnlksqndlqsl (The path is hidden in the beginning)\n\n" .
+            "Among the intercepted fragments, we found references to old online\n" .
+            "profiles — accounts that were once active but now seem dormant.\n" .
+            "n-qsfkjslkdjlksqjlkf (Shadows of the past)\n\n" .
+            "Ancient digital archives suggest the entity used to share images\n" .
+            "regularly — images that appear innocent on the surface.\n" .
+            "a-sflksjqlkfjlksq (The surface is a lie)\n\n" .
+            "Behavioral analysis shows a pattern: this individual always hides\n" .
+            "something in plain sight.\n" .
+            "b-qsljdlksqjdlkqs (Look closer)\n\n" .
+            "A source close to the investigation mentioned a phrase: \"the old\n" .
+            "ways are the best ways.\"\n" .
+            "a-qslkjsqlkflksq (Ancient methods)\n\n" .
+            "Hidden inside what appears to be a perfectly normal photograph,\n" .
+            "lies the truth.\n" .
+            "h-sdhlshqldqsld (The metadata speaks)\n\n" .
+            "Coordinates point to a social media trail.\n" .
+            "c-lsqdlkjsqlkdsqlk (The profile is watching)\n\n" .
+            "A colleague noted something strange about the captions on this\n" .
+            "account.\n" .
+            "a-lqsflsqljfljqshljsq (The key is in the reverse)\n\n" .
+            "We believe the account is still active on Instagram.\n" .
+            "wqdfljdsqlkjfqsjl (The username is 'oldus3rs')\n\n" .
+            "The ghost is waiting for you. Find the profile, find the image,\n" .
+            "and find the key hidden in the caption's structure.\n\n" .
+            "End of transmission. The rest is up to you.\n" .
+            "Good luck, investigator.\n\n" .
+            "...CONNECTION CLOSED...";
+
+        return response($transmission)->header('Content-Type', 'text/plain');
+    }
 }

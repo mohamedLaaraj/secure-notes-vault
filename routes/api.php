@@ -14,7 +14,6 @@ Route::post('reset-password',  [PasswordResetController::class, 'resetPassword']
 
 // ── PROTECTED ROUTES (Bearer token required) ───────────────────
 Route::middleware('auth:sanctum')->group(function () {
-
     // Auth
     Route::post('logout', [AuthController::class, 'logout']);
     Route::get('user',    [AuthController::class, 'me']);
@@ -26,9 +25,12 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::delete('notes',       [NoteController::class, 'destroyAll']);
 
     // ── CTF ROUTES ────────────────────────────────────────────────
-    Route::get('ctf/challenges',          [CtfController::class, 'challenges']);
-    Route::post('ctf/submit',             [CtfController::class, 'submit']);
-    Route::get('ctf/scoreboard',          [CtfController::class, 'scoreboard']);
+    Route::get('/ctf/challenges', [CtfController::class, 'index']);
+    Route::post('/ctf/submit', [CtfController::class, 'submit']);
+    Route::post('/ctf/hint', [CtfController::class, 'hint']);
+    Route::get('/ctf/scoreboard', [CtfController::class, 'scoreboard']);
+    Route::get('/ctf/stats', [CtfController::class, 'stats']);
+    Route::get('/ctf/transmission', [CtfController::class, 'getTransmission']);
 
     // Admin routes (only user ID 1 can access)
     Route::get('ctf/admin/challenges',         [CtfController::class, 'adminList']);
