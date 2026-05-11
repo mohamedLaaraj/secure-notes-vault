@@ -9,7 +9,8 @@
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </head>
-<body>
+<body class="ctf-body">
+    <div class="confetti-container" id="confettiContainer"></div>
     <div class="cyber-grid"></div>
 
     <!-- ═══ MAIN APP ═══════════════════════════════════════════ -->
@@ -115,7 +116,7 @@
                         <div class="rule-item"><i class="fas fa-robot" style="color:#f43f5e;margin-right:8px;"></i> <strong>Anti-AI:</strong> Challenges are designed to require human reasoning — AI tools won't help</div>
                         <div class="rule-item"><i class="fas fa-server" style="color:#f43f5e;margin-right:8px;"></i> <strong>No DoS:</strong> Do not attack the competition infrastructure</div>
                         <div class="rule-item"><i class="fas fa-star" style="color:#f43f5e;margin-right:8px;"></i> <strong>Points:</strong> Easy = 100pts | Medium = 250pts | Hard = 500pts | Insane = 1000pts</div>
-                        <div class="rule-item"><i class="fas fa-clock" style="color:#f43f5e;margin-right:8px;"></i> <strong>Hints:</strong> Using a hint costs 50% of the challenge's points</div>
+                        <div class="rule-item"><i class="fas fa-clock" style="color:#f43f5e;margin-right:8px;"></i> <strong>Hints:</strong> Using a hint costs 50 points</div>
                         <div class="rule-item"><i class="fas fa-trophy" style="color:#f43f5e;margin-right:8px;"></i> <strong>Tiebreaker:</strong> In case of equal points, earliest solve wins</div>
                     </div>
                 </div>
@@ -189,7 +190,7 @@
                 </div>
                 <div style="margin-top:1rem;border-top:1px dashed #1e2a4a;padding-top:1rem;">
                     <button id="hintBtn" onclick="requestHint()" class="btn-secondary" style="font-size:0.8rem;">
-                        <i class="fas fa-lightbulb"></i> Use Hint (-50% points)
+                        <i class="fas fa-lightbulb"></i> Use Hint (-50 points)
                     </button>
                     <div id="hintText" style="display:none;margin-top:0.75rem;padding:0.75rem;background:#0f172a;border-radius:8px;border-left:3px solid #f43f5e;color:#94a3b8;font-size:0.85rem;"></div>
                 </div>

@@ -440,3 +440,30 @@
     .challenge-modal-content { min-width: 90vw; }
     .ctf-timer-badge { margin-left: 0; width: 100%; justify-content: center; }
 }
+/* ── CONFETTI ANIMATION ───────────────────────────────────────── */
+.confetti-container {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100vw; height: 100vh;
+    pointer-events: none;
+    z-index: 9999;
+    overflow: hidden;
+}
+
+.confetti {
+    position: absolute;
+    width: 10px; height: 10px;
+    background: #f43f5e;
+    top: -10px;
+    opacity: 0.8;
+    border-radius: 2px;
+    animation: fall 3s ease-in-out infinite;
+}
+
+@keyframes fall {
+    0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+    100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+}
+
+/* Ensure body can hold confetti */
+.ctf-body { position: relative; }

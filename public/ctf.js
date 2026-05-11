@@ -222,11 +222,12 @@
             });
 
             if (data.correct) {
+                triggerConfetti();
                 showFeedback(`🎉 Correct! +${data.points_awarded} points!`, true);
                 solvedIds.add(currentChallenge.id);
                 renderChallenges();
                 updateStats();
-                setTimeout(closeModal, 2000);
+                setTimeout(closeModal, 3000);
             } else {
                 showFeedback('❌ Wrong flag. Keep trying!', false);
             }
@@ -255,12 +256,27 @@
             document.getElementById('hintText').textContent   = currentChallenge.hint;
             return;
         }
-        if (!confirm(`Using a hint costs 50% of this challenge's points. Continue?`)) return;
+        if (!confirm(`Using a hint costs 50 points. Continue?`)) return;
         hintUsed = true;
         document.getElementById('hintText').style.display = 'block';
         document.getElementById('hintText').textContent   = currentChallenge.hint;
-        document.getElementById('hintBtn').textContent    = '💡 Hint revealed (-50% applied on submit)';
+        document.getElementById('hintBtn').textContent    = '💡 Hint revealed (-50 pts applied on submit)';
     };
+
+    // ── ANIMATION ────────────────────────────────────────────────
+    function triggerConfetti() {
+        const container = document.getElementById('confettiContainer');
+        container.innerHTML = '';
+        for (let i = 0; i < 50; i++) {
+            const confetti = document.createElement('div');
+            confetti.className = 'confetti';
+            confetti.style.left = Math.random() * 100 + 'vw';
+            confetti.style.animationDelay = Math.random() * 2 + 's';
+            confetti.style.backgroundColor = ['#f43f5e', '#38bdf8', '#22c55e', '#eab308'][Math.floor(Math.random() * 4)];
+            container.appendChild(confetti);
+        }
+        setTimeout(() => container.innerHTML = '', 5000);
+    }
 
     // ── SCOREBOARD ────────────────────────────────────────────────
     window.loadScoreboard = async function() {

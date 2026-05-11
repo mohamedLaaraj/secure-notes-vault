@@ -75,9 +75,9 @@ class CtfController extends Controller
             return response()->json(['correct' => false, 'message' => 'Wrong flag']);
         }
 
-        // Calculate points (50% deduction if hint was used)
+        // Calculate points (50 points deduction if hint was used)
         $pointsAwarded = $hintUsed
-            ? (int) round($challenge->points * 0.5)
+            ? max(0, $challenge->points - 50)
             : $challenge->points;
 
         // Record the solve
@@ -99,10 +99,10 @@ class CtfController extends Controller
     // Returns ranked list of all players by total points
     public function scoreboard()
     {
-        $scores = CtfSolve::selectRaw('user_id, SUM(points_awarded) as total_points, COUNT(*) as solved_count')
+        $scores = CtfSolve::selectRaw('user_id, SUM(points_awarded) as total_points, COUNT(*) as solved_count, MIN(created_at) as first_solve')
             ->groupBy('user_id')
             ->orderByDesc('total_points')
-            ->orderBy('updated_at') // Tiebreaker: earliest solve wins
+            ->orderBy('first_solve') // Tiebreaker: earliest solve wins
             ->with('user:id,name')
             ->get()
             ->map(function ($row) {
