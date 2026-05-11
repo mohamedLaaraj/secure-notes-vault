@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\CtfChallenge;
+use App\Models\CtfSolve;
 use Illuminate\Database\Seeder;
 
 /**
@@ -15,18 +16,19 @@ class CtfChallengeSeeder extends Seeder
 {
     public function run(): void
     {
-        // Truncate existing challenges to ensure ONLY the requested one is present
+        // Truncate existing challenges and solves to reset everything
         CtfChallenge::truncate();
+        CtfSolve::truncate();
 
         $challenges = [
             [
                 'title'       => 'The Digital Trail',
                 'description' => 'nc mainline.proxy.rlwy.net 57564',
                 'category'    => 'forensics',
-                'difficulty'  => 'hard',
-                'points'      => 500,
+                'difficulty'  => 'medium',
+                'points'      => 250,
                 'flag'        => 'FLIPO{nt4_h3rb4n_brojol4_f1i9o}',
-                'hint'        => 'The key is hidden in the first letters of each paragraph in the story. Read them in reverse. Once you have the Instagram profile, use exiftool and then steghide.',
+                'hint'        => 'somethimes the beginning of the paragraph gives something useful',
                 'is_active'   => true,
             ],
         ];
@@ -35,6 +37,6 @@ class CtfChallengeSeeder extends Seeder
             CtfChallenge::create($ch);
         }
 
-        echo "✅ Seeding complete. ONLY 'The Digital Trail' is now in the database.\n";
+        echo "✅ Seeding complete. Scoreboard reset and ONLY 'The Digital Trail' (Medium) is active.\n";
     }
 }
