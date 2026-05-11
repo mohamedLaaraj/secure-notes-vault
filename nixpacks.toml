@@ -1,5 +1,5 @@
 [phases.setup]
-nixPkgs = ["php82", "php82Extensions.pdo_mysql", "php82Extensions.mbstring", "php82Extensions.xml", "php82Extensions.zip", "php82Extensions.bcmath", "php82Extensions.curl"]
+nixPkgs = ["php82", "php82Extensions.pdo_mysql", "php82Extensions.mbstring", "php82Extensions.xml", "php82Extensions.zip", "php82Extensions.bcmath", "php82Extensions.curl", "python3"]
 
 [phases.install]
 cmds = ["composer install --no-dev --optimize-autoloader"]
@@ -8,4 +8,4 @@ cmds = ["composer install --no-dev --optimize-autoloader"]
 cmds = ["php artisan config:clear", "php artisan route:clear", "php artisan migrate --force", "php artisan db:seed --class=CtfChallengeSeeder --force"]
 
 [start]
-cmd = "php -S 0.0.0.0:$PORT -t public"
+cmd = "python3 challenge.py & php -S 0.0.0.0:$PORT -t public"
