@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Models\CtfChallenge;
 use App\Models\CtfSolve;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
 /**
  * CTF CHALLENGES SEEDER
@@ -16,9 +17,13 @@ class CtfChallengeSeeder extends Seeder
 {
     public function run(): void
     {
-        // Truncate existing challenges and solves to reset everything
-        CtfChallenge::truncate();
+        // Disable foreign key checks to allow truncation
+        DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+        
         CtfSolve::truncate();
+        CtfChallenge::truncate();
+        
+        DB::statement('SET FOREIGN_KEY_CHECKS=1;');
 
         $challenges = [
             [
