@@ -15,7 +15,7 @@ I have updated your `nixpacks.toml` so that when you push this to GitHub, Railwa
 3. Go to **Settings** -> **Network**.
 4. Scroll down to **TCP Proxy**.
 5. Click **Add TCP Proxy**.
-6. Set the **Application Port** to `9999`.
+6. Set the **Application Port** to `8888`.
 7. Railway will give you a domain like `junction.proxy.rlwy.net:12345`.
 8. **This is your "nc link"!** Your friends will connect using:
    `nc junction.proxy.rlwy.net 12345` (replace with your actual proxy info).
