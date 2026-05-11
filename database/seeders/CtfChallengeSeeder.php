@@ -32,7 +32,7 @@ class CtfChallengeSeeder extends Seeder
                 'category'    => 'forensics',
                 'difficulty'  => 'medium',
                 'points'      => 250,
-                'flag'        => 'FLIPO{wachabana}',
+                'flag'        => 'FLIPO{nt4_h3rb4n_brojol4_f1i9o}',
                 'hint'        => 'somethimes the beginning of the paragraph gives something useful',
                 'is_active'   => true,
             ],
