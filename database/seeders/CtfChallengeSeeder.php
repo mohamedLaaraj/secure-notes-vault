@@ -115,6 +115,15 @@ class CtfChallengeSeeder extends Seeder
                 'hint'        => 'Use Autopsy or foremost to carve files from the disk image.',
                 'attachment_url' => 'https://your-server.com/challenges/disk.img',
             ],
+            [
+                'title'       => 'The Digital Trail',
+                'description' => 'A classified transmission has been intercepted. Connect to the secure relay at `mainline.proxy.rlwy.net 57564` (using `nc`) to begin your investigation. You will need to find a hidden Instagram profile, analyze metadata, and extract a hidden flag. Success requires a sharp eye for paragraph structures and steganography.',
+                'category'    => 'forensics',
+                'difficulty'  => 'hard',
+                'points'      => 500,
+                'flag'        => 'FLIPO{nt4_h3rb4n_brojol4_f1i9o}',
+                'hint'        => 'The key is hidden in the first letters of each paragraph in the story. Read them in reverse. Once you have the Instagram profile, use exiftool and then steghide.',
+            ],
 
             // ── REVERSE ───────────────────────────────────────────
             [
