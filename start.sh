@@ -31,8 +31,8 @@ if [ -n "$PYTHON_BIN" ]; then
     echo "LOG: Python found at $(which $PYTHON_BIN). Starting challenge..."
     $PYTHON_BIN challenge.py &
 else
-    echo "ERROR: Python not found in PATH! Trying fallback locations..."
-    /usr/bin/python3 challenge.py & || /usr/local/bin/python3 challenge.py & || echo "FATAL: Could not start challenge server."
+    echo "ERROR: Python not found in PATH! Trying fallback..."
+    /usr/bin/python3 challenge.py &
 fi
 
 # Start the PHP server
