@@ -6,6 +6,3 @@ cmds = ["composer install --no-dev --optimize-autoloader"]
 
 [phases.build]
 cmds = ["php artisan config:clear", "php artisan route:clear", "php artisan migrate --force", "php artisan db:seed --class=CtfChallengeSeeder --force", "chmod +x start.sh"]
-
-[start]
-cmd = "./start.sh"
