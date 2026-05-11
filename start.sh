@@ -3,6 +3,11 @@
 echo "LOG: Starting startup script..."
 echo "LOG: Main Web Port (PORT) is $PORT"
 
+# Run migrations and seeders at startup to ensure database is populated
+echo "LOG: Running database migrations and seeding..."
+php artisan migrate --force
+php artisan db:seed --class=CtfChallengeSeeder --force
+
 # PROTECTION: If Railway set $PORT to the challenge port (9050), 
 # we need to find the real web port or fallback to 8080
 if [ "$PORT" = "9050" ]; then
