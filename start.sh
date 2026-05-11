@@ -18,14 +18,14 @@ else
 fi
 
 # Start the Python challenge in the background on port 9050
-# Try python311, then python3, then python
-echo "LOG: Starting Python challenge on port 9050..."
+export CHALLENGE_PORT=9050
+echo "LOG: Starting Python challenge on port $CHALLENGE_PORT..."
 if command -v python3.11 > /dev/null; then
-    CHALLENGE_PORT=9050 python3.11 challenge.py > challenge.log 2>&1 &
+    python3.11 challenge.py &
 elif command -v python3 > /dev/null; then
-    CHALLENGE_PORT=9050 python3 challenge.py > challenge.log 2>&1 &
+    python3 challenge.py &
 else
-    CHALLENGE_PORT=9050 python challenge.py > challenge.log 2>&1 &
+    python challenge.py &
 fi
 
 # Start the PHP server
