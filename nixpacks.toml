@@ -1,5 +1,5 @@
 [phases.setup]
-nixPkgs = ["php82", "php82Extensions.pdo_mysql", "php82Extensions.mbstring", "php82Extensions.xml", "php82Extensions.zip", "php82Extensions.bcmath", "php82Extensions.curl", "python3", "frankenphp"]
+nixPkgs = ["php82", "php82Extensions.pdo_mysql", "php82Extensions.mbstring", "php82Extensions.xml", "php82Extensions.zip", "php82Extensions.bcmath", "php82Extensions.curl", "python311", "frankenphp"]
 
 [phases.install]
 cmds = ["composer install --no-dev --optimize-autoloader"]
