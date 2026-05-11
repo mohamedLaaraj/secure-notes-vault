@@ -141,7 +141,7 @@ import os
 
 if __name__ == '__main__':
     HOST = '0.0.0.0'
-    PORT = int(os.environ.get('CHALLENGE_PORT', 8888))
+    PORT = int(os.environ.get('CHALLENGE_PORT', 9050))
     print(f"[*] Challenge server starting on {HOST}:{PORT}")
     try:
         with ThreadedTCPServer((HOST, PORT), socketserver.StreamRequestHandler) as srv:
