@@ -28,7 +28,7 @@ class CtfChallengeSeeder extends Seeder
         $challenges = [
             [
                 'title'       => 'The Digital Trail',
-                'description' => 'nc mainline.proxy.rlwy.net 57564',
+                'description' => 'nc viaduct.proxy.rlwy.net 27201',
                 'category'    => 'forensics',
                 'difficulty'  => 'medium',
                 'points'      => 250,

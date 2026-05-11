@@ -1,15 +1,18 @@
 import socketserver
 import time
 import sys
+import os
 
 # ================================================================
 # CIPHERSTRIKE CTF — Forensics Challenge
-# "Digital Ghost" — Multi-layer OSINT + Steganography
+# "The Digital Trail" — Wordle-style access gate
 # Run: python challenge.py
-# Connect: nc <link> <port>
+# Connect: nc viaduct.proxy.rlwy.net 27201
 # ================================================================
 
-LONG_TEXT = """
+SECRET = "nymph"
+
+TRANSMISSION = """
 ...Transmission intercepted at 03:47 UTC...
 ...Source: UNKNOWN | Destination: UNKNOWN...
 ...Decryption: PARTIAL...
@@ -23,37 +26,29 @@ impossible to follow without the right tools.
 
 A recent investigation led our team to an abandoned digital
 footprint. The trail goes cold quickly — most people give up here.
-a-nsqldnlksqndlqsl (The path is hidden in the beginning)
 
 Among the intercepted fragments, we found references to old online
 profiles — accounts that were once active but now seem dormant.
-n-qsfkjslkdjlksqjlkf (Shadows of the past)
 
 Ancient digital archives suggest the entity used to share images
 regularly — images that appear innocent on the surface.
-a-sflksjqlkfjlksq (The surface is a lie)
 
 Behavioral analysis shows a pattern: this individual always hides
 something in plain sight.
-b-qsljdlksqjdlkqs (Look closer)
 
 A source close to the investigation mentioned a phrase: "the old
 ways are the best ways."
-a-qslkjsqlkflksq (Ancient methods)
 
 Hidden inside what appears to be a perfectly normal photograph,
 lies the truth.
-h-sdhlshqldqsld (The metadata speaks)
 
 Coordinates point to a social media trail.
-c-lsqdlkjsqlkdsqlk (The profile is watching)
 
 A colleague noted something strange about the captions on this
 account.
-a-lqsflsqljfljqshljsq (The key is in the reverse)
 
 We believe the account is still active on Instagram.
-wqdfljdsqlkjfqsjl (The username is 'oldus3rs')
+The username is: oldus3rs
 
 The ghost is waiting for you. Find the profile, find the image,
 and find the key hidden in the caption's structure.
@@ -64,80 +59,80 @@ Good luck, investigator.
 ...CONNECTION CLOSED...
 """
 
-QUESTIONS = [
-    {
-        "q": "Which tool is commonly used in Kali Linux to view and edit image metadata?",
-        "a": "exiftool"
-    },
-    {
-        "q": "What is the specific command (subcommand) used with 'steghide' to get a hidden file out?",
-        "a": "extract"
-    },
-    {
-        "q": "In a Vigenere cipher, if the plaintext is 'HELLO' and the key is 'A', the ciphertext is 'HELLO'. If the key is 'B', what does 'A' become?",
-        "a": "B"
-    }
-]
+def recv_line(conn):
+    """Read one line from the connection."""
+    data = b""
+    while True:
+        chunk = conn.recv(1)
+        if not chunk or chunk == b"\n":
+            break
+        if chunk == b"\r":
+            continue
+        data += chunk
+    return data.decode(errors='ignore').strip()
 
 def handle_client(conn):
     try:
-        conn.sendall(b"\033[2J\033[H")  # Clear screen
+        # Clear screen & show banner
+        conn.sendall(b"\033[2J\033[H")
         conn.sendall("""
 \033[31m
-  ██████╗██╗██████╗ ██╗  ██╗███████╗██████╗ ███████╗████████╗██████╗ ██╗██╗  ██╗███████╗
-  ██╔════╝██║██╔══██╗██║  ██║██╔════╝██╔══██╗██╔════╝╚══██╔══╝██╔══██╗██║██║ ██╔╝██╔════╝
-  ██║     ██║██████╔╝███████║█████╗  ██████╔╝███████╗   ██║   ██████╔╝██║█████╔╝ █████╗
-  ██║     ██║██╔═══╝ ██╔══██║██╔══╝  ██╔══██╗╚════██║   ██║   ██╔══██╗██║██╔═██╗ ██╔══╝
-  ╚██████╗██║██║     ██║  ██║███████╗██║  ██║███████║   ██║   ██║  ██║██║██║  ██╗███████╗
-  ╚═════╝╚═╝╚═╝     ╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝╚══════╝   ╚═╝   ╚═╝  ╚═╝╚═╝╚═╝  ╚═╝╚══════╝
+  \u2588\u2588\u2588\u2588\u2588\u2588\u2557\u2588\u2588\u2557\u2588\u2588\u2588\u2588\u2588\u2588\u2557 \u2588\u2588\u2557  \u2588\u2588\u2557\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2557\u2588\u2588\u2588\u2588\u2588\u2588\u2557 \u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2557\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2557\u2588\u2588\u2588\u2588\u2588\u2588\u2557 \u2588\u2588\u2557\u2588\u2588\u2557  \u2588\u2588\u2557\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2557
+  \u2588\u2588\u2554\u2550\u2550\u2550\u2550\u255d\u2588\u2588\u2551\u2588\u2588\u2554\u2550\u2550\u2588\u2588\u2557\u2588\u2588\u2551  \u2588\u2588\u2551\u2588\u2588\u2554\u2550\u2550\u2550\u2550\u255d\u2588\u2588\u2554\u2550\u2550\u2588\u2588\u2557\u2588\u2588\u2554\u2550\u2550\u2550\u2550\u255d\u255a\u2550\u2550\u2588\u2588\u2554\u2550\u2550\u255d\u2588\u2588\u2554\u2550\u2550\u2588\u2588\u2557\u2588\u2588\u2551\u2588\u2588\u2551 \u2588\u2588\u2554\u255d\u2588\u2588\u2554\u2550\u2550\u2550\u2550\u255d
+  \u2588\u2588\u2551     \u2588\u2588\u2551\u2588\u2588\u2588\u2588\u2588\u2588\u2554\u255d\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2551\u2588\u2588\u2588\u2588\u2588\u2557  \u2588\u2588\u2588\u2588\u2588\u2588\u2554\u255d\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2557   \u2588\u2588\u2551   \u2588\u2588\u2588\u2588\u2588\u2588\u2554\u255d\u2588\u2588\u2551\u2588\u2588\u2588\u2588\u2588\u2554\u255d \u2588\u2588\u2588\u2588\u2588\u2557
+  \u2588\u2588\u2551     \u2588\u2588\u2551\u2588\u2588\u2554\u2550\u2550\u255d \u2588\u2588\u2554\u2550\u2550\u2588\u2588\u2551\u2588\u2588\u2554\u2550\u2550\u255d  \u2588\u2588\u2554\u2550\u2550\u2588\u2588\u2557\u255a\u2550\u2550\u2550\u2550\u2588\u2588\u2551   \u2588\u2588\u2551   \u2588\u2588\u2554\u2550\u2550\u2588\u2588\u2557\u2588\u2588\u2551\u2588\u2588\u2554\u2550\u2588\u2588\u2557 \u2588\u2588\u2554\u2550\u2550\u255d
+  \u255a\u2588\u2588\u2588\u2588\u2588\u2588\u2557\u2588\u2588\u2551\u2588\u2588\u2551     \u2588\u2588\u2551  \u2588\u2588\u2551\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2557\u2588\u2588\u2551  \u2588\u2588\u2551\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2551   \u2588\u2588\u2551   \u2588\u2588\u2551  \u2588\u2588\u2551\u2588\u2588\u2551\u2588\u2588\u2551  \u2588\u2588\u2557\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2557
+  \u255a\u2550\u2550\u2550\u2550\u2550\u255d\u255a\u2550\u255d\u255a\u2550\u255d     \u255a\u2550\u255d  \u255a\u2550\u255d\u255a\u2550\u2550\u2550\u2550\u2550\u2550\u255d\u255a\u2550\u255d  \u255a\u2550\u255d\u255a\u2550\u2550\u2550\u2550\u2550\u2550\u255d   \u255a\u2550\u255d   \u255a\u2550\u255d  \u255a\u2550\u255d\u255a\u2550\u255d\u255a\u2550\u255d  \u255a\u2550\u255d\u255a\u2550\u2550\u2550\u2550\u2550\u2550\u255d
 \033[0m
 """.encode('utf-8'))
+
         conn.sendall(b"\033[36m=== FORENSICS CHALLENGE : THE DIGITAL TRAIL ===\033[0m\n")
-        conn.sendall(b"\033[90mCategory: Forensics | Status: ENCRYPTED\033[0m\n\n")
-        conn.sendall(b"\033[33mProve your identity to access the classified files.\033[0m\n\n")
+        conn.sendall(b"\033[90mCategory: Forensics | Difficulty: MEDIUM | Points: 250\033[0m\n\n")
+        conn.sendall(b"\033[33mA 5-letter word is the key to unlock the classified transmission.\033[0m\n")
+        conn.sendall(b"\033[33mThis has nothing to do with Romans \xf0\x9f\x98\x89\033[0m\n\n")
+        conn.sendall(b"\033[90mRules: Enter any 5-letter word. Score shows how many letters match.\033[0m\n")
+        conn.sendall(b"\033[90mGet 5/5 to unlock the transmission.\033[0m\n")
+        conn.sendall(b"\033[90m" + b"-" * 50 + b"\033[0m\n\n")
 
-        for i, q_item in enumerate(QUESTIONS):
-            conn.sendall(f"\033[32m[QUESTION {i+1}/3]\033[0m {q_item['q']}\n".encode())
+        # Wordle-style loop
+        while True:
             conn.sendall(b"\033[32m> \033[0m")
-            
-            data = b""
-            while True:
-                chunk = conn.recv(1)
-                if not chunk or chunk == b"\n":
-                    break
-                if chunk == b"\r":
-                    continue
-                data += chunk
-            
-            user_ans = data.decode(errors='ignore').strip().lower()
-            
-            if user_ans != q_item['a'].lower():
-                conn.sendall(b"\n\033[31m[ACCESS DENIED] Incorrect answer. Connection terminated.\033[0m\n")
-                return
-            
-            conn.sendall(b"\033[32m[CORRECT]\033[0m\n\n")
+            user = recv_line(conn)
 
-        conn.sendall(b"\033[32m[ACCESS GRANTED] Decrypting transmission...\033[0m\n\n")
-        time.sleep(1)
+            # Silently ignore non 5-letter alpha inputs
+            if len(user) != 5 or not user.isalpha():
+                continue
 
-        for line in LONG_TEXT.split('\n'):
-            conn.sendall((line + '\n').encode())
-            time.sleep(0.05)
+            user = user.lower()
+            score = sum(1 for i in range(5) if user[i] == SECRET[i])
 
-        conn.sendall(b"\n\033[31m[END OF FILE]\033[0m\n")
-        conn.sendall(b"\033[90mConnection will close in 10 seconds...\033[0m\n")
-        time.sleep(10)
+            if score < 5:
+                conn.sendall(f"\033[33m{score}/5\033[0m\n".encode())
+                continue
+
+            # Correct!
+            conn.sendall(b"\n\033[32m5/5 — ACCESS GRANTED. Decrypting transmission...\033[0m\n\n")
+            time.sleep(1)
+
+            for line in TRANSMISSION.split('\n'):
+                conn.sendall((line + '\n').encode('utf-8'))
+                time.sleep(0.04)
+
+            conn.sendall(b"\n\033[31m[END OF FILE]\033[0m\n")
+            conn.sendall(b"\033[90mConnection will close in 10 seconds...\033[0m\n")
+            time.sleep(10)
+            return
 
     except Exception:
         pass
     finally:
         conn.close()
 
+
 class ThreadedTCPServer(socketserver.ThreadingMixIn, socketserver.TCPServer):
     allow_reuse_address = True
     daemon_threads      = True
 
-import os
 
 if __name__ == '__main__':
     HOST = '0.0.0.0'

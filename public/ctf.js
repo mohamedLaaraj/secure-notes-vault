@@ -171,14 +171,6 @@
 
         document.getElementById('modalTitle').textContent       = `${icon} ${ch.title}`;
         document.getElementById('modalDescription').innerHTML = ch.description;
-        
-        // Show download section for Forensics challenges (The Easy Way)
-        const downloadSection = document.getElementById('downloadSection');
-        if (ch.category.toLowerCase() === 'forensics') {
-            downloadSection.style.display = 'block';
-        } else {
-            downloadSection.style.display = 'none';
-        }
         document.getElementById('modalCategory').textContent    = ch.category.toUpperCase();
         document.getElementById('modalDifficulty').className    = `badge ${diffCls}`;
         document.getElementById('modalDifficulty').textContent  = ch.difficulty.toUpperCase();
