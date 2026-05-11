@@ -19,17 +19,8 @@ fi
 
 # Start the Python challenge in the background on port 9050
 export CHALLENGE_PORT=9050
-export PATH=$PATH:/nix/var/nix/profiles/default/bin:/usr/local/bin:/usr/bin
-
-echo "LOG: Searching for Python..."
-PYTHON_BIN=$(which python3 || which python3.11 || which python || find /nix/store -name python3 -type f -executable -print -quit 2>/dev/null)
-
-if [ -n "$PYTHON_BIN" ]; then
-    echo "LOG: Python found at $PYTHON_BIN. Starting challenge..."
-    $PYTHON_BIN challenge.py &
-else
-    echo "FATAL: Python not found even after deep search! Check Nixpacks config."
-fi
+echo "LOG: Starting Python challenge on port $CHALLENGE_PORT..."
+python3 challenge.py &
 
 # Start the PHP server
 if command -v frankenphp > /dev/null; then
