@@ -19,13 +19,20 @@ fi
 
 # Start the Python challenge in the background on port 9050
 export CHALLENGE_PORT=9050
-echo "LOG: Starting Python challenge on port $CHALLENGE_PORT..."
-if command -v python3.11 > /dev/null; then
-    python3.11 challenge.py &
-elif command -v python3 > /dev/null; then
-    python3 challenge.py &
+echo "LOG: Searching for Python..."
+
+PYTHON_BIN=""
+if command -v python3 > /dev/null; then PYTHON_BIN="python3";
+elif command -v python3.11 > /dev/null; then PYTHON_BIN="python3.11";
+elif command -v python > /dev/null; then PYTHON_BIN="python";
+fi
+
+if [ -n "$PYTHON_BIN" ]; then
+    echo "LOG: Python found at $(which $PYTHON_BIN). Starting challenge..."
+    $PYTHON_BIN challenge.py &
 else
-    python challenge.py &
+    echo "ERROR: Python not found in PATH! Trying fallback locations..."
+    /usr/bin/python3 challenge.py & || /usr/local/bin/python3 challenge.py & || echo "FATAL: Could not start challenge server."
 fi
 
 # Start the PHP server
